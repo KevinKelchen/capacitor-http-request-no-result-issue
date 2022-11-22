@@ -1,4 +1,6 @@
+import { HttpClient } from "@angular/common/http";
 import { Component } from '@angular/core';
+import { firstValueFrom } from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,10 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  constructor(private httpClient: HttpClient) {}
+
+  async ngOnInit() {
+    const result = await firstValueFrom(this.httpClient.get('https://swapi.dev/api/people/?search=r2+d2'));
+    console.dir(result);
+  }
 }
