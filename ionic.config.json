@@ -1,5 +1,7 @@
 {
   "name": "capacitor-http-url-spaces",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
