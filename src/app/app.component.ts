@@ -11,7 +11,15 @@ export class AppComponent {
   constructor(private httpClient: HttpClient) {}
 
   async ngOnInit() {
-    const result = await firstValueFrom(this.httpClient.get('https://swapi.dev/api/people/?search=r2+d2'));
+    // URL with an encoded space (via the `+` character) works as expected.
+    // const url = 'https://swapi.dev/api/people/?search=r2+d2';
+
+    // URL with a non-encoded space fails.
+    // Works fine without `CapacitorHttp`.
+    const url = 'https://swapi.dev/api/people/?search=r2 d2';
+
+    const result = await firstValueFrom(this.httpClient.get(url));
+
     console.dir(result);
   }
 }
