@@ -9,7 +9,14 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "clean": "npx rimraf node_modules",
+    "clean-install": "npm run clean && npm ci",
+    "serve": "npm run start -- --no-open",
+    "serve.external": "npm run serve -- --external",
+    "cap.build": "npm run build && cap sync",
+    "cap.run.ios": "ionic cap run ios --livereload --external",
+    "cap.run.android": "ionic cap run android --livereload --external"
   },
   "private": true,
   "dependencies": {
