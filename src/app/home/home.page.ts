@@ -12,21 +12,11 @@ export class HomePage {
     private httpClient: HttpClient
   ) {}
 
-  async requestWithEncodedSpace() {
-    // URL with an encoded space (via the `+` character) works as expected.
-    const url = 'https://swapi.dev/api/people/?search=r2+d2';
+  async makeRequest() {
+    // This is a URL used in a request in our production app.
+    const url =
+      'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json';
 
-    await this.makeRequest(url);
-  }
-
-  async requestWithoutEncodedSpace() {
-    // URL with a non-encoded space fails on hybrid iOS.
-    const url = 'https://swapi.dev/api/people/?search=r2 d2';
-
-    await this.makeRequest(url);
-  }
-
-  private async makeRequest(url: string) {
     const result = await firstValueFrom(this.httpClient.get(url));
 
     console.dir(result);
