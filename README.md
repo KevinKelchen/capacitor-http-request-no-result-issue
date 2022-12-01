@@ -60,15 +60,34 @@ To debug the WebView, follow the instructions [here](https://ionicframework.com/
 
 - Get the app running by following [Running the App](#running-the-app) for iOS.
 - Once the app is running, open the Safari Web Inspector by following instructions in [Debugging the App](#debugging-the-app). Open the Console view.
-- There are two buttons in the app's UI: `Request With Encoded Space` and `Request Without Encoded Space`.
+- There is one button in the app's UI: `Make Request`.
   - Their click events will be handled in `/src/app/home/home.page.ts`.
-  - They will make network requests to the [Star Wars API](https://swapi.dev/) using the Angular `HttpClient` which will use the `CapacitorHttp` plugin at a lower-level.
-- Click the button that says `Request With Encoded Space`.
-  - In the console, you'll see the `CapacitorHttp` request and result objects, as well as a printed object of the response body. The request was successful.
-- Now click the button that says `Request Without Encoded Space`.
-  - In the console, you'll see the `CapacitorHttp` request and result objects. The result shows an error:
-    - ```json
-      {
-        message: "Invalid URL", errorMessage: "Invalid URL"
-      }
-
+  - This will make a network request to a URL used in our production app using the Angular `HttpClient` which will use the `CapacitorHttp` plugin at a lower-level.
+  - The URL is known to return an error response. The issue pertains to how `CapacitorHttp` handles that response.
+- Click the button that says `Make Request`.
+  - In the console, you may see the `CapacitorHttp` request and result objects.
+    - iOS with `CapacitorHttp`
+      - The request never completes. You'll see a `CapacitorHttp` request logged to the console, but no result is logged. This is unexpected; expected the request to complete with an error.
+  - Other configurations behave more as expected. Here's how they compare:
+    - iOS without `CapacitorHttp`:
+      - The request will fail immediately/complete.
+      - There will be an unhandled error in the console:
+        - `ERROR – Error: Uncaught (in promise): HttpErrorResponse: {"headers":{"normalizedNames":{},"lazyUpdate":null,"headers":{}},"status":0,"statusText":"Unknown Error","url":"https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json","ok":false,"name":"HttpErrorResponse","message":"Http failure response for https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json: 0 Unknown Error","error":{"isTrusted":true}}`
+      - There will be an error that follows in the console:
+        - `Failed to load resource: A server with the specified hostname could not be found. https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json`
+    - Android with `CapacitorHttp`:
+      - The request will fail immediately/complete.
+      - There will be a `CapacitorHttp` error in the console:
+        - ```json
+          {
+            message: 'UnknownHostException'
+          }
+          ```
+      - There will be an unhandled error that follows in the console:
+        - `ERROR Error: Uncaught (in promise): HttpErrorResponse: {"headers":{"normalizedNames":{},"lazyUpdate":null,"headers":{}},"status":0,"statusText":"Unknown Error","url":"https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json","ok":false,"name":"HttpErrorResponse","message":"Http failure response for https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json: 0 Unknown Error","error":{"isTrusted":false}}`
+    - Android without `CapacitorHttp`:
+      - The request will fail immediately/complete.
+      - There will be an unhandled error in the console:
+        - `ERROR Error: Uncaught (in promise): HttpErrorResponse: {"headers":{"normalizedNames":{},"lazyUpdate":null,"headers":{}},"status":0,"statusText":"Unknown Error","url":"https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json","ok":false,"name":"HttpErrorResponse","message":"Http failure response for https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json: 0 Unknown Error","error":{"isTrusted":true}}`
+      - There will be an error that follows in the console:
+        - `GET https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyFeedSample/MapServer?f=json net::ERR_NAME_NOT_RESOLVED`
